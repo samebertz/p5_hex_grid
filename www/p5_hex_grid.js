@@ -5,9 +5,9 @@
 const HEX_SIZE     = 25,
       HEX_HEIGHT   = HEX_SIZE * 2,
       HEX_WIDTH    = HEX_HEIGHT * Math.sqrt(3)/2,
-      // Axial coordinate system origin in Cartesian coordinates
+      // Axial coordinate system origin in pixel coordinates
       AXIAL_ORIGIN = [0, 0],
-      // Axial coordinate basis vectors in Cartesian coordinates,
+      // Axial coordinate basis vectors in pixel coordinates,
       // where q = +x and r = +z in cube coordinates
       AXIAL_BASIS  = {
         q: [HEX_WIDTH,   0],
@@ -24,9 +24,19 @@ function cube_to_axial(cube) {
 function axial_to_oddr_offset(axial) {
   return {row: axial.r, col: axial.q + (axial.r - (axial.r&1)) / 2}
 }
+// console.assert(Object.values(axial_to_oddr_offset({q: 0, r: 0})).join() == Object.values({row: 0, col: 0}).join())
+// console.log(Object.values(axial_to_oddr_offset({q: 0, r: 0})).join() + ' ' + Object.values({row: 0, col: 0}).join())
+// console.assert(Object.values(axial_to_oddr_offset({q: 1, r: 0})).join() == Object.values({row: 0, col: 1}).join())
+// console.assert(Object.values(axial_to_oddr_offset({q: 0, r: 1})).join() == Object.values({row: 1, col: 0}).join())
+// console.assert(Object.values(axial_to_oddr_offset({q: 3, r: 4})).join() == Object.values({row: 4, col: 5}).join())
 function oddr_offset_to_axial(offset) {
   return {q: offset.col - (offset.row - (offset.row&1)) / 2, r: offset.row}
 }
+// console.assert(Object.values(oddr_offset_to_axial({row: 0, col: 0})).join() == Object.values({q: 0, r: 0}).join())
+// console.log(Object.values(oddr_offset_to_axial({row: 0, col: 0})).join() + ' ' + Object.values({q: 0, r: 0}).join())
+// console.assert(Object.values(oddr_offset_to_axial({row: 1, col: 0})).join() == Object.values({q: 0, r: 1}).join())
+// console.assert(Object.values(oddr_offset_to_axial({row: 0, col: 1})).join() == Object.values({q: 1, r: 0}).join())
+// console.assert(Object.values(oddr_offset_to_axial({row: 3, col: 4})).join() == Object.values({q: 3, r: 3}).join())
 
 function setup() {
   createCanvas(windowWidth - 20, windowHeight - 20)
