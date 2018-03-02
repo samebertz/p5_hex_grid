@@ -2,7 +2,7 @@
 // with x = pair[0] and y = pair[1]
 // axial coordinates are objects with properties q and r
 
-const HEX_SIZE     = 100,
+const HEX_SIZE     = 25,
       HEX_HEIGHT   = HEX_SIZE * 2,
       HEX_WIDTH    = HEX_HEIGHT * Math.sqrt(3)/2,
       // Axial coordinate system origin in Cartesian coordinates
@@ -44,6 +44,8 @@ function hex_corner(center, size, i) {
 }
 
 function draw() {
+  strokeWeight(2)
+  stroke('rgb(0,0,255)')
   ellipse(...AXIAL_ORIGIN, 25)
 
   function draw_hex(hex_axial_coordinates) {
@@ -54,16 +56,63 @@ function draw() {
     }
     endShape(CLOSE)
   }
-  // draw_hex({q:0,r:0})
-  // draw_hex({q:0,r:1})
 
-  // function draw_hex_grid(cols, rows) {
-    var N = 3
-    for(let row = 0; row < N; row++) {
+  // size MxN (or just M), with offset <M_,N_>
+  function draw_hex_grid(M, N, M_, N_, condition) {
+    // console.log('drawing hex grid with: '+Array.prototype.slice.call(arguments).join(', '))
+    for(let row = 0; row < M; row++) {
       for(let col = 0; col < N; col++) {
-        if(row + col < N) draw_hex({q: col, r: row})
+        if(condition(row, col, M, N)) draw_hex({q: N_+col, r: M_+row})
       }
     }
-  // }
-  // draw_hex_grid()
+  }
+
+  // draw rhombus shaped hex grid with height M and width N
+  function draw_hex_grid_rhombus(M, N, M_, N_) {
+    // console.log('drawing hex grid in rhombus shape with: '+Array.prototype.slice.call(arguments).join(', '))
+    draw_hex_grid(M, N, M_, N_, () => true)
+  }
+
+  // draw regular hexagon shaped hex grid with side length size
+  function draw_hex_grid_hexagon(size, M_, N_) {
+    // console.log('drawing hex grid in hexagon shape with: '+Array.prototype.slice.call(arguments).join(', '))
+    draw_hex_grid(2*size-1, 2*size-1, M_, N_,
+      (row, col, M, N) => {
+        let row_ = row - (M+1)/2 + 1,
+            col_ = col - (N+1)/2 + 1
+        return Math.abs(row_ + col_) < (M+1)/2
+      })
+  }
+
+  // draw isosceles triangle shaped hex grid with side length size
+  function draw_hex_grid_triangle(size, M_, N_) {
+    // console.log('drawing hex grid in triangle shape with: '+Array.prototype.slice.call(arguments).join(', '))
+    draw_hex_grid(size, size, M_, N_, (row, col, M) => Math.abs(row+col) < M)
+  }
+
+  // draw "rectangle" shaped hex grid with height M and width N
+  function draw_hex_grid_rectangle(M, N, M_, N_) {
+    // console.log('drawing hex grid in rectangle shape with: '+Array.prototype.slice.call(arguments).join(', '))
+    let row_pairs = Math.floor(M/2)
+    for(let row = 0; row < M; row++) {
+      for(let col = -row_pairs; col < N; col++) {
+        let row_pair = Math.floor(row/2),
+            position = row + col - row_pair - (row&1)
+        if(position >= 0 && position < N) {
+          draw_hex({q: N_+col, r: M_+row})
+        }
+      }
+    }
+  }
+
+  // strokeWeight(3)
+  // stroke(0)
+  // draw_hex_grid_rectangle(27,23,-13,-5)
+  //
+  // strokeWeight(4)
+  // stroke('rgb(255,0,0)')
+  // draw_hex_grid_rhombus(5,5,-6,-6)
+  // draw_hex_grid_hexagon(3,-6,3)
+  // draw_hex_grid_triangle(5,4,-6)
+  // draw_hex_grid_rectangle(5,5,4,3)
 }
