@@ -14,6 +14,20 @@ const HEX_SIZE     = 25,
         r: [HEX_WIDTH/2, HEX_HEIGHT * 3/4]
       }
 
+// hex coordinate conversions
+function axial_to_cube(axial) {
+  return {x: axial.q, y: -axial.q-axial.r, z: axial.r}
+}
+function cube_to_axial(cube) {
+  return {q: cube.x, r: cube.z}
+}
+function axial_to_oddr_offset(axial) {
+  return {row: axial.r, col: axial.q + (axial.r - (axial.r&1)) / 2}
+}
+function oddr_offset_to_axial(offset) {
+  return {q: offset.col - (offset.row - (offset.row&1)) / 2, r: offset.row}
+}
+
 function setup() {
   createCanvas(windowWidth - 20, windowHeight - 20)
 
