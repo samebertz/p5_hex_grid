@@ -12,7 +12,42 @@ const HEX_SIZE     = 25,
       AXIAL_BASIS  = {
         q: [HEX_WIDTH,   0],
         r: [HEX_WIDTH/2, HEX_HEIGHT * 3/4]
-      }
+      },
+      // neighbor directions, starting at +x and ordered counter-clockwise
+      // <dq, dr> unit vectors for each neighbor in Axial coordinates
+      AXIAL_DIRECTIONS = [
+        {q: 1,  r: 0},
+        {q: 1,  r: -1},
+        {q: 0,  r: -1},
+        {q: -1, r: 0},
+        {q: -1, r: 1},
+        {q: 0,  r: 1}
+      ]
+      // <dx, dy, dz> triples for +/- unit basis vectors in Cube coordinates
+      // i.e. vectors for each neighbor
+      CUBE_DIRECTIONS = [
+        {x: 1, y: -1, z: 0},
+        {x: 1, y: 0, z: -1},
+        {x: 0, y: 1, z: -1},
+        {x: -1, y: 1, z: 0},
+        {x: -1, y: 0, z: 1},
+        {x: 0, y: -1, z: 1}
+      ]
+      // <drow, dcol> vectors for each neighbor in odd-r Offset coordinates
+      ODDR_OFFSET_DIRECTIONS = [
+        [ {row: 0,  col: 1},
+          {row: -1,  col: 0},
+          {row: -1, col: -1},
+          {row: 0, col: -1},
+          {row: 1, col: -1},
+          {row: 1,  col: 0} ],
+        [ {row: 0,  col: 1},
+          {row: -1,  col: 1},
+          {row: -1,  col: 0},
+          {row: 0, col: -1},
+          {row: 1,  col: 0},
+          {row: 1,  col: 1} ]
+      ]
 
 // hex coordinate conversions
 function axial_to_cube(axial) {
@@ -37,6 +72,27 @@ function oddr_offset_to_axial(offset) {
 // console.assert(Object.values(oddr_offset_to_axial({row: 1, col: 0})).join() == Object.values({q: 0, r: 1}).join())
 // console.assert(Object.values(oddr_offset_to_axial({row: 0, col: 1})).join() == Object.values({q: 1, r: 0}).join())
 // console.assert(Object.values(oddr_offset_to_axial({row: 3, col: 4})).join() == Object.values({q: 3, r: 3}).join())
+
+// hex neighbor getters
+function cube_neighbor(cube, direction) {
+  return {
+    x: cube.x + CUBE_DIRECTIONS[direction].x,
+    y: cube.y + CUBE_DIRECTIONS[direction].y,
+    z: cube.z + CUBE_DIRECTIONS[direction].z
+  }
+}
+function axial_neighbor(axial, direction) {
+  return {
+    q: axial.q + AXIAL_DIRECTIONS[direction].q,
+    r: axial.r + AXIAL_DIRECTIONS[direction].r,
+  }
+}
+function oddr_offset_neighbor(offset, direction) {
+  return {
+    row: offset.row + ODDR_OFFSET_DIRECTIONS[offset.row&1][direction].row,
+    col: offset.col + ODDR_OFFSET_DIRECTIONS[offset.row&1][direction].col,
+  }
+}
 
 function setup() {
   createCanvas(windowWidth - 20, windowHeight - 20)
