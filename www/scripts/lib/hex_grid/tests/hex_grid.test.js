@@ -1,0 +1,22 @@
+console.assert(Object.values(axial_to_oddr_offset({q: 0, r: 0})).join() == Object.values({row: 0, col: 0}).join())
+console.log(Object.values(axial_to_oddr_offset({q: 0, r: 0})).join() + ' ' + Object.values({row: 0, col: 0}).join())
+console.assert(Object.values(axial_to_oddr_offset({q: 1, r: 0})).join() == Object.values({row: 0, col: 1}).join())
+console.assert(Object.values(axial_to_oddr_offset({q: 0, r: 1})).join() == Object.values({row: 1, col: 0}).join())
+console.assert(Object.values(axial_to_oddr_offset({q: 3, r: 4})).join() == Object.values({row: 4, col: 5}).join())
+
+console.assert(Object.values(oddr_offset_to_axial({row: 0, col: 0})).join() == Object.values({q: 0, r: 0}).join())
+console.log(Object.values(oddr_offset_to_axial({row: 0, col: 0})).join() + ' ' + Object.values({q: 0, r: 0}).join())
+console.assert(Object.values(oddr_offset_to_axial({row: 1, col: 0})).join() == Object.values({q: 0, r: 1}).join())
+console.assert(Object.values(oddr_offset_to_axial({row: 0, col: 1})).join() == Object.values({q: 1, r: 0}).join())
+console.assert(Object.values(oddr_offset_to_axial({row: 3, col: 4})).join() == Object.values({q: 3, r: 3}).join())
+
+strokeWeight(3)
+stroke(0)
+draw_hex_grid_rectangle(27,23,-13,-5)
+
+strokeWeight(4)
+stroke('rgb(255,0,0)')
+draw_hex_grid_rhombus(5,5,-6,-6)
+draw_hex_grid_hexagon(3,-6,3)
+draw_hex_grid_triangle(5,4,-6)
+draw_hex_grid_rectangle(5,5,4,3)
